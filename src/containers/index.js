@@ -1,76 +1,80 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetchInitialData } from '../actions'
+import { fetchInitialData, addItem, dropItem, removeItem } from '../actions'
 import '../css/bootstrap.min.css'
-import TaskCountBox from '../component/taskCountBox'
-import TaskBody from '../component/taskBody'
+import TaskCountBox from '../component/TaskCountBox'
+import Column from '../component/Column'
+import { mapStatus } from '../utils/constant'
 
 class Main extends Component {
+  state = {
+    inputValue: '',
+    draggedTask: {}
+  };
+
   componentDidMount() {
-    this.props.fetchInitialData();
+    this.props.fetchInitialData(() => {
+
+    });
   }
 
-  onDrop = (e, title) => {
-    console.log('you drop it here: ', e.clientX, e.clientY, title);
-  };
-
-  onDragOver = (e) => {
+  addItem = (e) => {
     e.preventDefault();
+    this.props.addItem({
+      id: this.props.todos.length,
+      text: this.state.inputValue,
+      status: 0,
+      order: this.props.todos.length
+    });
+    this.setState({ inputValue: '' });
   };
 
-  onKlik = (e) => {
-    console.log('position: ', e.getClientRects());
+  onChange = (e) => this.setState({ inputValue: e.target.value });
+
+  onDrag = (e, items) => {
+    e.preventDefault();
+    this.setState({ draggedTask: items });
+  };
+
+  onDrop = (e, column) => {
+    console.log('onDrop: ', this.state.draggedTask);
+    this.props.removeItem(this.state.draggedTask);
+    this.props.dropItem({
+      id: this.state.draggedTask.id,
+      text: this.state.draggedTask.text,
+      status: parseInt(column)
+    })
+  };
+
+  onDragOver = (e) => e.preventDefault();
+
+  renderColumn = () => {
+    //THIS NEED MORE OPTIMIZATION, NOT DYNAMIC ENOUGH
+    return Object.keys(mapStatus).map((key) => {
+      if (key === '0') return <Column items={this.props.todos} status={key} title={mapStatus[key]} onDrop={this.onDrop} onDragOver={this.onDragOver} onDrag={this.onDrag} />;
+      if (key === '1') return <Column items={this.props.inProgress} status={key} title={mapStatus[key]} onDrop={this.onDrop} onDragOver={this.onDragOver} onDrag={this.onDrag} />;
+      if (key === '2') return <Column items={this.props.done} status={key} title={mapStatus[key]} onDrop={this.onDrop} onDragOver={this.onDragOver} onDrag={this.onDrag} />;
+    })
   };
 
   render() {
-    console.log('props: ', this.props.todos);
     return (
         <div className="container-fluid bg">
           <div className="row justify-content-between top-margin">
             <div className="col-4 search-box">
-              <h3>Add Task</h3>
-              <input type="text" className="txtbox-margin" />
+              <form onSubmit={this.addItem}>
+                <h3>Add Task</h3>
+                <input type="text" className="txtbox-margin" value={this.state.inputValue} onChange={this.onChange} />
+              </form>
             </div>
             <div className="col-4 d-flex flex-row-reverse">
-              <TaskCountBox count={1}/>
+              <TaskCountBox count={this.props.todos.length + this.props.inProgress.length + this.props.done.length}/>
             </div>
           </div>
           <div className="row">
-            <div className="col-md-4 col-sm-12 col-xs-12" onDrop={e => this.onDrop(e, 'To Do')} onDragOver={e => this.onDragOver(e)} >
-              <div className="header">
-                <div className="row h-100 justify-content-between align-items-center">
-                  <div className="col">
-                      <h4 className="header-title">To Do</h4>
-                  </div>
-                  <div className="col d-flex flex-row-reverse">
-                    <TaskCountBox className="" count={this.props.todos.length}/>
-                  </div>
-                </div>
-              </div>
-              {this.props.todos && this.props.todos.map((item) => <TaskBody content={item} />)}
-            </div>
-
-            <div className="col-md-4 col-sm-12 col-xs-12" onDrop={e => this.onDrop(e, 'In Progress')} onDragOver={e => this.onDragOver(e)} >
-              <div className="header">
-                <div className="row h-100 justify-content-between align-items-center">
-                  <div className="col">
-                    <h4 className="header-title">To Do</h4>
-                  </div>
-                  <div className="col d-flex flex-row-reverse">
-                    <TaskCountBox className="" count={1}/>
-                  </div>
-                </div>
-              </div>
-              <div className="task-body" draggable onClick={e => this.onKlik(e)}>
-                <h6 className="">Write a cool JS Library</h6>
-              </div>
-              <div className="task-body" draggable>
-                <h6 className="">Write a cool JS Library</h6>
-              </div>
-            </div>
-            <div className="col-md-4 col-sm-12 col-xs-12">
-              Hi
-            </div>
+            {this.renderColumn()}
+            {/*<Column items={this.props.inProgress} onDrop={this.onDrop} onDragOver={this.onDragOver} onDrag={this.onDrag} />*/}
+            {/*<Column items={this.props.done} onDrop={this.onDrop} onDragOver={this.onDragOver} onDrag={this.onDrag} />*/}
           </div>
         </div>
     )
@@ -79,7 +83,10 @@ class Main extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchInitialData: () => dispatch(fetchInitialData())
+    fetchInitialData: (callback) => dispatch(fetchInitialData(callback)),
+    addItem: (data) => dispatch(addItem(data)),
+    dropItem: (data) => dispatch(dropItem(data)),
+    removeItem: (data) => dispatch(removeItem(data))
   }
 };
 
