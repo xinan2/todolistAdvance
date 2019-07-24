@@ -11,6 +11,7 @@
   "devDependencies": {
     "@babel/cli": "^7.1.0",
     "@babel/core": "^7.1.0",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.2",
@@ -23,6 +24,7 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
+    "immutable": "^4.0.0-rc.12",
     "react": "^16.8.6",
     "react-hot-loader": "^4.12.8",
     "react-redux": "^7.1.0",

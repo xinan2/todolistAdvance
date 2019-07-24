@@ -1,0 +1,75 @@
+.App {
+    background-size: cover;
+    height: 100vh;
+    /*font-family: Arial, Helvetica, sans-serif;*/
+    background-color: #d3d3d3;
+}
+
+.bg {
+    /*color: white;*/
+}
+
+.title {
+    background-color: #808080;
+}
+
+.search-box h3 {
+    display: inline-block;
+    padding-left: 1em;
+    padding-right: 1em;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.search-box input[type=text] {
+    display: inline-block;
+    border-radius: 5px;
+    border: 0;
+}
+
+.txtbox-margin {
+    padding: 0.7em;
+}
+
+.top-margin {
+    padding-top: 1em;
+}
+
+.task-box-count {
+    padding-top: 8px;
+    width: 100px;
+    height: 60px;
+    background-color: white;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.task-box-count span {
+    font-weight: bold;
+}
+
+.task-box-count p {
+    color: #808080;
+    font-weight: 600;
+    line-height: 9px;
+    padding: 0;
+}
+
+.header {
+    background-color: #808080;
+    padding: 30px 30px 20px 30px;
+}
+
+.header .header-title {
+    /*padding-top: 10px;*/
+    font-weight: bold;
+    color: white;
+}
+
+.task-body {
+    background-color: white;
+    padding: 40px 30px 40px 30px;
+    margin-bottom: 5px;
+    color: black;
+    /*font-size: 1.1em;*/
+}
